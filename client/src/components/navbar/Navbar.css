@@ -1,0 +1,20 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+
+.navbar{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(#5891FF, #F7A5FF);
+    padding: 0px 2%;
+}
+
+.logo{
+    width: 160px;
+    cursor: pointer;
+}
