@@ -1,5 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Jacquard+12&family=Lora:ital,wght@0,400..700;1,400..700&display=swap');
+
+*{
+  font-family: "Jacquard 12", serif;
+}
+
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Jacquard 12", serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -17,13 +23,13 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: sans-serif;
+  font-family: "Jacquard 12", serif;
 }
 
 .container{
   width: 100vw;
   min-height: 100vh;
-  background: #ced8ff;
+  background: #FFFFFF;
 }
 
 a {
@@ -46,6 +52,10 @@ body {
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
+}
+
+li{
+  color: #213547;
 }
 
 button {

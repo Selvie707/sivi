@@ -1,7 +1,7 @@
 #root {
   max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  margin: 0px;
+  padding: 0px;
   text-align: center;
 }
 
@@ -16,6 +16,105 @@
 }
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+.video{
+  border-radius: 32px;
+  border: #F7A5FF 30px;
+}
+
+.detected{
+  display: flex;
+  margin: 30px;
+}
+
+.detectedSentence{
+  width: 100%;
+  height: 480px;
+  display: grid;
+  align-items: end;
+  justify-content: center;
+}
+
+h2{
+  color: #3E65B0;
+  width: fit-content;
+  height: fit-content;
+}
+
+p{
+  color: #3E65B0;
+  font-size: 50px;
+  font-weight: bolder;
+}
+
+.button{
+  height: 70%;
+  width: 100%;
+  padding: 0px;
+  margin: 0px;
+  border: 0px;
+  background: linear-gradient(#5891FF, #F7A5FF);
+}
+
+.a{
+  width: 100%;
+  height: 100%;
+  font-size: 32px;
+  align-content: center;
+  justify-content: center;
+}
+
+.b{
+  width: 100%;
+  height: 100%;
+  font-size: 100px;
+  font-weight: bolder;
+  align-content: center;
+  justify-content: center;
+}
+
+.interval{
+  display: flex;
+}
+
+.intervalOption{
+  width: fit-content;
+  border-width: 2px;
+  border-image: linear-gradient(#5891FF, #F7A5FF) 1;
+  color: #3E65B0;
+  background: #FFFFFF;
+  text-align: center;
+  margin-left: 20px;
+}
+
+.history-container{
+  width: 100%;
+}
+
+.history{
+  margin: 30px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.history-grid{
+  margin: 20px;
+  width: fit-content;
+  height: auto;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.history-image {
+  width: 100px; /* Atur ukuran sesuai keinginan */
+  height: auto; /* Biarkan proporsi tetap terjaga */
+  border-radius: 8px;
+  margin: 5px;
+}
+
+.historyText{
+  font-size: large;
 }
 
 @keyframes logo-spin {

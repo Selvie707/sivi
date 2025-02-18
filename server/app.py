@@ -10,7 +10,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Load YOLO model
-model = YOLO('C:\\Users\\USER\\Downloads\\tes\\besty.pt')  # Ganti dengan path model Anda
+model = YOLO('D:\\github\\sivi\\besty.pt')  # Ganti dengan path model Anda
 
 @app.route('/process_frame', methods=['POST'])
 def process_frame():
