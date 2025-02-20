@@ -1,16 +1,40 @@
-import React, { useState, useEffect } from "react";
 import axios from "axios";
+import "./ManageUserStatus.css";
 import { useNavigate } from "react-router-dom";
-import "./UpdatePayment.css";
-import Navbar from '../components/navbar/Navbar';
+import React, { useState, useEffect } from "react";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer, toast } from "react-toastify";
 
-const UpdatePaymentStatus = () => {
+const ManageUserStatus = () => {
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const handleUpdatePayment = (email) => {
+    axios.post("http://127.0.0.1:5000/update-payment", { email })
+      .then((response) => {
+        toast.success("Status pembayaran berhasil diperbaharui!")
+        setUsers(users.map(user => user.email === email ? { ...user, is_paid: true } : user));
+      })
+      .catch((error) => {
+        toast.error("Gagal memperbaharui status pembayaran")
+        console.error("Error:", error);
+      });
+  };
+
+  const handleUpdateRole = (email) => {
+    axios.post("http://127.0.0.1:5000/update-role", { email })
+      .then((response) => {
+        toast.success("Role berhasil diperbaharui!")
+        setUsers(users.map(user => user.email === email ? { ...user, role: "admin" } : user));
+      })
+      .catch((error) => {
+        toast.error("Gagal memperbaharui role")
+        console.error("Error:", error);
+      });
+  };
+
   useEffect(() => {
-    // Ambil data pengguna dari backend
     axios.get("http://127.0.0.1:5000/users")
       .then((response) => {
         setUsers(response.data);
@@ -22,39 +46,13 @@ const UpdatePaymentStatus = () => {
       });
   }, []);
 
-  const handleUpdatePayment = (email) => {
-    axios.post("http://127.0.0.1:5000/update-payment", { email })
-      .then((response) => {
-        alert("Payment status updated successfully!");
-        // Update status pengguna di state setelah berhasil diupdate
-        setUsers(users.map(user => user.email === email ? { ...user, is_paid: true } : user));
-      })
-      .catch((error) => {
-        alert("Error updating payment status");
-        console.error("Error:", error);
-      });
-  };
-
-  const handleUpdateRole = (email) => {
-    axios.post("http://127.0.0.1:5000/update-role", { email })
-      .then((response) => {
-        alert("Role berhasil diubah!");
-        // Update status pengguna di state setelah berhasil diupdate
-        setUsers(users.map(user => user.email === email ? { ...user, role: "admin" } : user));
-      })
-      .catch((error) => {
-        alert("Error updating role");
-        console.error("Error:", error);
-      });
-  };
-
   if (loading) {
     return <div>Loading...</div>;
   }
 
   return (
     <div className='container'>
-      <div className="headingg">
+      <div className="heading-container">
         <button className="close-buttonn" onClick={() => navigate("/")}>✖</button>
         <h2 className="heading">LIST PENGGUNA</h2>
       </div>
@@ -81,20 +79,22 @@ const UpdatePaymentStatus = () => {
               <td>{user.is_paid ? "Telah Bayar" : "Belum Bayar"}</td>
               <td>
                 {!user.is_paid && (
-                  <button onClick={() => handleUpdatePayment(user.email)} className="button-payment">Update Status</button>
+                  <button onClick={() => handleUpdatePayment(user.email)} className="button-payment">UPDATE STATUS</button>
                 )}
               </td>
               <td>
                 {user.role === "user" && (
-                  <button onClick={() => handleUpdateRole(user.email)} className="button-role">Update Role</button>
+                  <button onClick={() => handleUpdateRole(user.email)} className="button-role">UPDATE ROLE</button>
                 )}
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+        
+      <ToastContainer position="top-right" autoClose={5000} />
     </div>
   );
 };
 
-export default UpdatePaymentStatus;
+export default ManageUserStatus;

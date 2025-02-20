@@ -1,41 +1,21 @@
-import React, { useEffect, useRef, useState } from "react";
-import './Recognition.css';
-import logo from "../assets/camoff.png";
 import axios from "axios";
-import Navbar from '../components/navbar/Navbar';
+import './Recognition.css';
 import Guide from "../guide/Guide";
+import logo from "../../assets/offcam-logo.png";
+import Navbar from '../../components/navbar/Navbar';
+import React, { useEffect, useRef, useState } from "react";
 
 const App = () => {
   const videoRef = useRef(null);
   const streamRef = useRef(null);
   const [cameraActive, setCameraActive] = useState(false);
   const [detectedLetter, setDetectedLetter] = useState("-");
-  const [lastConfidence, setLastConfidence] = useState(null);
   const [fetchInterval, setFetchInterval] = useState(1000);
   const [intervalId, setIntervalId] = useState(null);
   const [history, setHistory] = useState([]);
   const [showGuide, setShowGuide] = useState(false);
-  const [cameras, setCameras] = useState([]); // Simpan daftar kamera
-  const [selectedCamera, setSelectedCamera] = useState(""); // Kamera yang dipilih
-
-  // Ambil daftar kamera saat komponen dimuat
-  useEffect(() => {
-    async function getCameras() {
-      try {
-        const devices = await navigator.mediaDevices.enumerateDevices();
-        const videoDevices = devices.filter(device => device.kind === "videoinput");
-        setCameras(videoDevices);
-
-        if (videoDevices.length > 0) {
-          setSelectedCamera(videoDevices[0].deviceId); // Pilih kamera pertama sebagai default
-        }
-      } catch (err) {
-        console.error("Error fetching cameras: ", err);
-      }
-    }
-
-    getCameras();
-  }, []);
+  const [cameras, setCameras] = useState([]);
+  const [selectedCamera, setSelectedCamera] = useState("");
 
   const startCamera = async () => {
     if (!selectedCamera) return;
@@ -47,8 +27,7 @@ const App = () => {
 
       streamRef.current = stream;
       setCameraActive(true); 
-
-      // Tunggu sejenak agar video bisa diperbarui
+      
       setTimeout(() => {
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
@@ -95,7 +74,6 @@ const App = () => {
 
         if (detectedConfidence > 0.5) {
           setDetectedLetter(detectedClass);
-          setLastConfidence(detectedConfidence);
           setHistory((prevHistory) => [
             ...prevHistory,
             { frame: `data:image/jpeg;base64,${frame}`, letter: detectedClass }
@@ -108,6 +86,24 @@ const App = () => {
       console.error("Error sending frame to server: ", err);
     }
   };
+
+  useEffect(() => {
+    async function getCameras() {
+      try {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const videoDevices = devices.filter(device => device.kind === "videoinput");
+        setCameras(videoDevices);
+
+        if (videoDevices.length > 0) {
+          setSelectedCamera(videoDevices[0].deviceId);
+        }
+      } catch (err) {
+        console.error("Error fetching cameras: ", err);
+      }
+    }
+
+    getCameras();
+  }, []);
 
   useEffect(() => {
     if (intervalId) clearInterval(intervalId);
@@ -123,26 +119,26 @@ const App = () => {
     <div className='container'>
       <Navbar />
 
-      <div className="detected">
+      <div className="detected-container">
         {!cameraActive ? (
           <img src={logo} alt="Logo" style={{ width: "30%", marginLeft: "52px" }} />          
         ) : (
-          <video className="video" ref={videoRef} autoPlay playsInline style={{ width: "50%" }} />
+          <video className="realtime-video" ref={videoRef} autoPlay playsInline style={{ width: "50%" }} />
         )}
 
-        <div className="detectedSentencee">
-          <h2 className="a">TERDETEKSI SEBAGAI HURUF</h2>
-          <p className="b">{detectedLetter}</p>
-
-          {/* Pilihan Kamera */}
+        <div className="functions-container">
+          <h2 className="title">TERDETEKSI SEBAGAI HURUF</h2>
+          <p className="result">{detectedLetter}</p>
+          
           <div className="camera-selection">
-            <label htmlFor="cameraSelect" className="labell">PILIH KAMERA:</label>
+            <label htmlFor="cameraSelect" className="option-label">PILIH KAMERA:</label>
+
             <select
               id="cameraSelect"
               className="camera-selectionn"
               onChange={(e) => setSelectedCamera(e.target.value)}
               value={selectedCamera}
-              disabled={cameraActive} // Tidak bisa diubah saat kamera aktif
+              disabled={cameraActive}
             >
               {cameras.map((camera, index) => (
                 <option key={camera.deviceId} value={camera.deviceId}>
@@ -150,7 +146,9 @@ const App = () => {
                 </option>
               ))}
             </select>
-            <label className="labell">ATUR KECEPATAN:</label>
+
+            <label className="option-label">ATUR KECEPATAN:</label>
+            
             <select className="camera-selectionn" onChange={(e) => setFetchInterval(Number(e.target.value))} value={fetchInterval}>
               <option value={500}>0.5 detik</option>
               <option value={1000}>1 detik</option>
@@ -173,15 +171,13 @@ const App = () => {
       </div>
 
       <div className="history-container">
-        <div className="history">
-          <h2 className="history-text">HASIL DETEKSI</h2>
-        </div>
+        <h2 className="history-text">HASIL DETEKSI</h2>
         
         <div className="history-grid">
           {history.map((item, index) => (
             <div key={index} className="history-item">
               <img src={item.frame} alt={`Detected ${item.letter}`} className="history-image" />
-              <p className="historyText">{item.letter}</p>
+              <p className="history-result-text">{item.letter}</p>
             </div>
           ))}
         </div>

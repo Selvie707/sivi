@@ -4,7 +4,7 @@ body{
     display: flex;
 }
 
-.headingg{
+.heading-container{
     margin: 0px 48px;
     display: flex;
     padding-top: 62px;
@@ -17,12 +17,12 @@ body{
 }
 
 .button-payment{
-    background: #5891FF;
+    background: linear-gradient(#5891FF, #F7A5FF);;
     font-weight: 800;
 }
 
 .button-role{
-    background: #F7A5FF;
+    background: linear-gradient(#5891FF, #F7A5FF);;
     font-weight: 800;
 }
 
@@ -37,7 +37,7 @@ body{
 }
 
 .content-table thead tr{
-    background-color: #5891FF;
+    background: linear-gradient(to bottom, #5891FF, #F7A5FF);
     color: white;
     text-align: center;
     font-weight: 800;

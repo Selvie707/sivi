@@ -1,4 +1,4 @@
-.guide-container {
+.unauthorized-container {
     position: fixed;
     top: 0;
     left: 0;
@@ -9,12 +9,6 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-  }
-  
-  .guide-image {
-    width: 85%; /* Atur ukuran gambar */
-    max-width: 650px;
-    border-radius: 10px;
   }
   
   .close-button {

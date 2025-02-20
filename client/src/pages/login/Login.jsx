@@ -1,21 +1,22 @@
-import React, { useState } from "react";
+import "./Login.css";
 import axios from 'axios';
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import "./Login.css"; // Buat file CSS terpisah untuk styling
-import registerImage from "../assets/logo.png"; // Sesuaikan path gambar
+import registerImage from "../../assets/sivi-logo.png";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer, toast } from "react-toastify";
 
 export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
   const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');  
 
   const logInUser = () => {
     if (email.length === 0) {
-      alert("Email blank!");
+      toast.error("Username tidak boleh kosong!");
     } else if (password.length === 0) {
-      alert("Password blank!");
+      toast.error("Password tidak boleh kosong!");
     } else {
       axios.post("http://127.0.0.1:5000/login", {
         email: email,
@@ -23,38 +24,35 @@ export default function Login() {
       })
       .then(function (response) {
         console.log(response);
-        
-        // Simpan status login di localStorage
         localStorage.setItem("isLoggedIn", "true");
-        localStorage.setItem("userRole", response.data.role);
-  
+        localStorage.setItem("userRole", response.data.role);  
         navigate("/");
       })
       .catch(function (error) {
         console.log(error, "error");
         if (error.response && error.response.status === 401) {
-          alert("Invalid Credentials");
+          toast.error("Kredential tidak sesuai!");
         } else if (error.response && error.response.status === 402) {
-          alert("Kamu belum bayar");
+          toast.error("Status pembayaran belum berubah!");
         }
       });
     }
   };  
 
   return (
-    <div className="registerContainer">
-      {/* Left Side */}
-      <div className="logoContainer">
+    <div className="login-container">
+      <div className="logo-container">
         <h2></h2>
-        <img src={registerImage} alt="App Logo" className="logoo" />
+        
+        <img src={registerImage} alt="App Logo" className="sivi-logo" />
+        
         <h2></h2>
       </div>
       
-      {/* Right Side */}
-      <div className="registerFormContainer">
-        <div className="registerContainer2">
+      <div className="login-form-container">
           <h2>LOGIN</h2>
-          <form className="formClass">
+
+          <form className="form-class">
             <input
               type="email"
               name="email"
@@ -65,6 +63,7 @@ export default function Login() {
               className="field"
               required
             />
+
             <input
               type="password"
               name="password"
@@ -75,19 +74,22 @@ export default function Login() {
               className="field"
               required
             />
+
             <button
               type="button"
-              className="buttonn"
+              className="login-button"
               onClick={logInUser}
             >
               Login
             </button>
           </form>
-          <p className="ask">
-            Belum punya akun?<Link to="/register" className="linkk"> Register</Link>
+
+          <p className="go-to-register-text">
+            Belum punya akun?<Link to="/register" className="route-to-register"> Register</Link>
           </p>
         </div>
-      </div>
+        
+        <ToastContainer position="top-right" autoClose={5000} />
     </div>
   );
 }

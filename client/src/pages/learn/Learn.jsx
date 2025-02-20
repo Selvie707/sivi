@@ -1,24 +1,24 @@
-import React, { useEffect, useRef, useState } from "react";
 import './Learn.css';
-import logo from "../../assets/camoff.png";
 import axios from "axios";
+import Guide from "../guide/Guide";
+import logo from "../../assets/offcam-logo.png";
 import Navbar from '../../components/navbar/Navbar';
-import Guide from "../../guide/Guide";
+import React, { useEffect, useRef, useState } from "react";
 
 const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
 const Learn = () => {
+  const fetchInterval = 800;
   const videoRef = useRef(null);
   const streamRef = useRef(null);
+  const [history, setHistory] = useState([]);
+  const [cameras, setCameras] = useState([]);
+  const [showGuide, setShowGuide] = useState(false);
+  const [intervalId, setIntervalId] = useState(null);
   const [cameraActive, setCameraActive] = useState(false);
+  const [selectedCamera, setSelectedCamera] = useState("");
   const [detectedLetter, setDetectedLetter] = useState("-");
   const [targetLetter, setTargetLetter] = useState(alphabet[Math.floor(Math.random() * alphabet.length)]);
-  const fetchInterval = 800;
-  const [intervalId, setIntervalId] = useState(null);
-  const [history, setHistory] = useState([]);
-  const [showGuide, setShowGuide] = useState(false);
-  const [cameras, setCameras] = useState([]);
-  const [selectedCamera, setSelectedCamera] = useState("");
 
   useEffect(() => {
     async function getCameras() {
@@ -85,7 +85,6 @@ const Learn = () => {
         if (detectedConfidence > 0.5) {
           setDetectedLetter(detectedClass);
           
-          // Cek apakah huruf yang dideteksi sesuai dengan target
           const isCorrect = detectedClass === targetLetter;
   
           if (isCorrect) {
@@ -94,7 +93,6 @@ const Learn = () => {
               { frame: `data:image/jpeg;base64,${frame}`, letter: detectedClass }
             ]);
             
-            // Update target huruf ke huruf lain secara acak
             setTargetLetter(alphabet[Math.floor(Math.random() * alphabet.length)]);
           }
         }
@@ -114,61 +112,66 @@ const Learn = () => {
       setIntervalId(newIntervalId);
       return () => clearInterval(newIntervalId);
     }
-  }, [fetchInterval, cameraActive, targetLetter]); // Tambahkan targetLetter di sini  
+  }, [fetchInterval, cameraActive, targetLetter]);
 
   return (
     <div className='container'>
       <Navbar />
-      <div className="detected">
+
+      <div className="main-container">
         {!cameraActive ? (
           <img src={logo} alt="Logo" style={{ width: "30%", marginLeft: "52px" }} />          
         ) : (
           <video className="video" ref={videoRef} autoPlay playsInline style={{ width: "50%" }} />
         )}
-        <div className="detectedSentence">
-            <div className="detectedd">
-                <div className="det">
-                    <h2 className="a">PERAGAKAN HURUF</h2>
-                    <p className="b">{targetLetter}</p>
+
+        <div className="target-detected-letter">
+            <div className="letters">
+                <div className="letter">
+                    <h2 className="title">PERAGAKAN HURUF</h2>
+                    <p className="result">{targetLetter}</p>
                 </div>
                 
-                <div className="det">
-                    <h2 className="a">TERDETEKSI SEBAGAI</h2>
-                    <p className="b">{detectedLetter}</p>
+                <div className="letter">
+                    <h2 className="title">TERDETEKSI SEBAGAI</h2>
+                    <p className="result">{detectedLetter}</p>
                 </div>
             </div>
 
-          <div className="camera-selection">
-            <label htmlFor="cameraSelect">PILIH KAMERA:</label>
-            <select
-              id="cameraSelect"
-              className="camera-selectionn"
-              onChange={(e) => setSelectedCamera(e.target.value)}
-              value={selectedCamera}
-              disabled={cameraActive}
-            >
-              {cameras.map((camera, index) => (
-                <option key={camera.deviceId} value={camera.deviceId}>
-                  {camera.label || `Kamera ${index + 1}`}
-                </option>
-              ))}
-            </select>
-            {!cameraActive ? (
-            <button className="buttonn" onClick={startCamera}>MULAI KAMERA</button>
-          ) : (
-            <button className="buttonn" onClick={stopCamera}>MATIKAN KAMERA</button>
-          )}
-          </div>
+            <div className="camera-selection">
+              <label htmlFor="cameraSelect">PILIH KAMERA:</label>
 
-          
-          <button className="button" onClick={() => setShowGuide(true)}>PANDUAN</button>
-          {showGuide && <Guide onClose={() => setShowGuide(false)} />}
+              <select
+                id="cameraSelect"
+                className="camera-options"
+                onChange={(e) => setSelectedCamera(e.target.value)}
+                value={selectedCamera}
+                disabled={cameraActive}
+              >
+                {cameras.map((camera, index) => (
+                  <option key={camera.deviceId} value={camera.deviceId}>
+                    {camera.label || `Kamera ${index + 1}`}
+                  </option>
+                ))}
+              </select>
+
+              {!cameraActive ? (
+                <button className="camera-button" onClick={startCamera}>MULAI KAMERA</button>
+              ) : (
+                <button className="camera-button" onClick={stopCamera}>MATIKAN KAMERA</button>
+              )}
+            </div>
+            
+            <button className="guide-button" onClick={() => setShowGuide(true)}>PANDUAN</button>
+            {showGuide && <Guide onClose={() => setShowGuide(false)} />}
         </div>
       </div>
+
       <div className="history-container">
         <div className="history">
           <h2 className="history-text">JAWABAN BENAR</h2>
         </div>
+        
         <div className="history-grid">
           {history.map((item, index) => (
             <div key={index} className="history-item">

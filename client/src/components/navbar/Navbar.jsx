@@ -1,11 +1,11 @@
-import React from "react";
 import "./Navbar.css";
+import React from "react";
+import logo from "../../assets/sivi-logo.png";
+import adminIcon from "../../assets/admin-logo.png";
+import detectIcon from "../../assets/detect-logo.png";
+import logoutIcon from "../../assets/logout-logo.png";
+import learnIcon from "../../assets/learn-sign-logo.png";
 import { useNavigate, useLocation } from "react-router-dom";
-import logo from "../../assets/logo.png";
-import logoutIcon from "../../assets/logout.png";
-import adminIcon from "../../assets/admin.png";
-import learnIcon from "../../assets/learn.png";
-import detectIcon from "../../assets/detect.png";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -17,8 +17,7 @@ const Navbar = () => {
     localStorage.removeItem("userRole");
     navigate("/login");
   };
-
-  // Logika perubahan ikon dan navigasi
+  
   const isLearnPage = location.pathname === "/learn";
   const learnButtonIcon = isLearnPage ? detectIcon : learnIcon;
   const learnButtonTarget = isLearnPage ? "/" : "/learn";
@@ -37,10 +36,10 @@ const Navbar = () => {
           />
         )}
         <img 
-          src={learnButtonIcon}  // Gunakan ikon sesuai halaman
+          src={learnButtonIcon}
           alt="Learn" 
           className="icon" 
-          onClick={() => navigate(learnButtonTarget)}  // Pindah ke halaman yang sesuai
+          onClick={() => navigate(learnButtonTarget)}
           style={{ cursor: "pointer" }} 
         />
         <img 

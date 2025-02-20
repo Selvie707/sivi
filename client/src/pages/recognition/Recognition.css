@@ -29,12 +29,12 @@
     filter: drop-shadow(0 0 2em #61dafbaa);
   }
   
-  .video{
+  .realtime-video{
     border-radius: 32px;
     border: #F7A5FF 30px;
   }
   
-  .detected{
+  .detected-container{
     display: flex;
     margin: 0px;
     padding: 30px;
@@ -42,7 +42,7 @@
     max-width: 100vw;
   }
   
-  .detectedSentencee{
+  .functions-container{
     margin: 0px 122px;
     width: 100%;
     height: 480px;
@@ -50,6 +50,24 @@
     gap: 22px;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+  }
+  
+  .title{
+    width: 100%;
+    height: 100%;
+    margin: 0px 120px;
+    font-size: 32px;
+    align-content: center;
+    justify-content: center;
+  }
+  
+  .result{
+    width: 100%;
+    height: 100%;
+    font-size: 100px;
+    font-weight: bolder;
+    align-content: center;
     justify-content: center;
   }
   
@@ -74,24 +92,6 @@
     border: 0px;
     font-family: "Lora", serif; 
     background: linear-gradient(#5891FF, #F7A5FF);
-  }
-  
-  .a{
-    width: 100%;
-    height: 100%;
-    margin: 0px 120px;
-    font-size: 32px;
-    align-content: center;
-    justify-content: center;
-  }
-  
-  .b{
-    width: 100%;
-    height: 100%;
-    font-size: 100px;
-    font-weight: bolder;
-    align-content: center;
-    justify-content: center;
   }
   
   .interval{
@@ -141,22 +141,20 @@
     font-family: "Lora", serif;
   }
 
-  .labell{
+  .option-label{
     font-family: "Lora", serif;
   }
   
   .history-container{
     width: 100%;
   }
-  
-  .history{
-    display: flex;
-  }
 
   .history-text{
     margin: 0px;
     padding: 0px;
     flex-grow: 1;
+    margin-left: auto;
+    margin-right: auto;
   }
   
   .history-grid{
@@ -168,13 +166,13 @@
   }
   
   .history-image {
-    width: 100px; /* Atur ukuran sesuai keinginan */
-    height: auto; /* Biarkan proporsi tetap terjaga */
+    width: 100px;
+    height: auto;
     border-radius: 8px;
     margin: 5px;
   }
   
-  .historyText{
+  .history-result-text{
     font-size: large;
   }
   

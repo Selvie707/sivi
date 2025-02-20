@@ -1,7 +1,7 @@
 #root {
-    max-width: 100%;
     margin: 0px;
     padding: 0px;
+    max-width: 100%;
     text-align: center;
   }
 
@@ -22,9 +22,11 @@
     will-change: filter;
     transition: filter 300ms;
   }
+
   .logo:hover {
     filter: drop-shadow(0 0 2em #646cffaa);
   }
+
   .logo.react:hover {
     filter: drop-shadow(0 0 2em #61dafbaa);
   }
@@ -34,33 +36,51 @@
     border: #F7A5FF 30px;
   }
   
-  .detected{
-    display: flex;
+  .main-container{
     margin: 0px;
-    padding: 30px;
     width: 100%;
-    height: fit-content;
-    max-width: 100vw;
-  }
-
-  .detectedd{
+    padding: 30px;
     display: flex;
-    gap: 0px;
+    max-width: 100vw;
+    height: fit-content;
   }
   
-  .detectedSentence{
+  .target-detected-letter{
     width: 100%;
+    display: grid;
     height: 480px;
-    display: grid   ;
     align-items: end;
     justify-content: center;
   }
 
-  .det{
+  .letters{
+    gap: 0px;
     display: flex;
+  }
+
+  .letter{
     gap: 32px;
-    flex-direction: column;
+    display: flex;
     align-items: center;
+    flex-direction: column;
+  }
+  
+  .title{
+    padding: 0px;
+    font-size: 32px;
+    width: fit-content;
+    height: fit-content;
+    align-content: center;
+    justify-content: center;
+  }
+  
+  .result{
+    font-size: 100px;
+    width: fit-content;
+    height: fit-content;
+    font-weight: bolder;
+    align-content: center;
+    justify-content: center;
   }
   
   h2{
@@ -71,97 +91,79 @@
   }
   
   p{
-    color: #3E65B0;
     font-size: 50px;
+    color: #3E65B0;
     font-weight: bolder;
   }
   
-  .button{
-    height: fit-content;
+  .guide-button{
     width: 100%;
-    padding: 13px 0px;
     margin: 0px;
     border: 0px;
+    padding: 13px 0px;
+    height: fit-content;
     font-family: "Lora", serif; 
     background: linear-gradient(#5891FF, #F7A5FF);
   }
 
-  .buttonn{
-    height: fit-content;
-    width: fit-content;
+  .camera-button{
+    border: 0px;
+    flex-grow: 1;
     padding: 13px;
     margin-top: 0px;
     margin-left: 12px;
-    border: 0px;
-    flex-grow: 1;
+    width: fit-content;
+    height: fit-content;
     font-family: "Lora", serif; 
     background: linear-gradient(#5891FF, #F7A5FF);
   }
   
-  .a{
-    padding: 0px;
-    width: fit-content;
-    height: fit-content;
-    font-size: 32px;
-    align-content: center;
-    justify-content: center;
-  }
-  
-  .b{
-    width: fit-content;
-    height: fit-content;
-    font-size: 100px;
-    font-weight: bolder;
-    align-content: center;
-    justify-content: center;
-  }
-  
   .interval{
-    margin-left: 30px;
-    display: flex;
-    align-items: center;
     flex-grow: 1;
+    display: flex;
+    margin-left: 30px;
+    align-items: center;
   }
   
   .intervalOption{
+    flex-grow: 1;
+    padding: 12px;
+    color: #3E65B0;
+    margin-top: 36px;
+    border-width: 2px;
+    margin-left: 20px;
+    text-align: center;
     width: fit-content;
     height: fit-content;
-    padding: 12px;
-    border-width: 2px;
-    border-image: linear-gradient(#5891FF, #F7A5FF) 1;
-    color: #3E65B0;
     background: #FFFFFF;
-    text-align: center;
-    margin-top: 36px;
-    margin-left: 20px;
     font-family: "Lora", serif;
-    flex-grow: 1;
+    border-image: linear-gradient(#5891FF, #F7A5FF) 1;
   }
 
   .camera-selection{
     width: 100%;
+    padding: 0px;
     display: flex;
+    color: #3E65B0;
+    text-align: center;
     align-items: center;
     height: fit-content;
-    padding: 0px;
-    color: #3E65B0;
     background: #FFFFFF;
-    text-align: center; 
     font-family: "Lora", serif;
   }
 
-  .camera-selectionn{
+  .camera-options{
+    padding: 12px;
+    margin-top: 0px;
+    color: #3E65B0;
+    border-width: 2px;
+    margin-left: 12px;
+    text-align: center;
     width: fit-content;
     height: fit-content;
-    padding: 12px;
-    border-width: 2px;
-    border-image: linear-gradient(#5891FF, #F7A5FF) 1;
-    color: #3E65B0;
     background: #FFFFFF;
-    text-align: center;
-    margin-top: 0px;
-    margin-left: 12px;
     font-family: "Lora", serif;
+    border-image: linear-gradient(#5891FF, #F7A5FF) 1;
   }
   
   .history-container{
@@ -179,17 +181,17 @@
   
   .history-grid{
     margin: 20px;
-    width: fit-content;
     height: auto;
     display: flex;
     flex-wrap: wrap;
+    width: fit-content;
   }
   
   .history-image {
-    width: 100px; /* Atur ukuran sesuai keinginan */
-    height: auto; /* Biarkan proporsi tetap terjaga */
-    border-radius: 8px;
     margin: 5px;
+    width: 100px;
+    height: auto;
+    border-radius: 8px;
   }
   
   .historyText{

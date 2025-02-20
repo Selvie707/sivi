@@ -6,27 +6,27 @@ import base64
 from ultralytics import YOLO
 from flask_cors import CORS, cross_origin #ModuleNotFoundError: No module named 'flask_cors' = pip install Flask-Cors
 from models import db, User
-from flask_mail import Mail, Message  # Tambahkan ini
+from flask_mail import Mail, Message
+from dotenv import load_dotenv
+import os
 
-# Inisialisasi aplikasi Flask
+load_dotenv()
+
 app = Flask(__name__)
 CORS(app)
 
-# Konfigurasi SMTP
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # Bisa diganti dengan SMTP lain
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = 'via.work707@gmail.com'  # Ganti dengan emailmu
-app.config['MAIL_PASSWORD'] = 'cqqg qnxp sfgn gzmf'  # Gunakan App Password jika pakai Gmail
-app.config['MAIL_DEFAULT_SENDER'] = 'via.work707@gmail.com'
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_USERNAME')
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
 
-mail = Mail(app)  # Inisialisasi Flask-Mail
+mail = Mail(app)
 
-# Load YOLO model
-model = YOLO('D:\\github\\sivi\\besty.pt')  # Ganti dengan path model Anda
-
-app.config['SECRET_KEY'] = 'viavia-via'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sivi.db'
+model = YOLO(os.getenv('YOLO_MODEL_PATH'))
 
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 SQLALCHEMY_ECHO = True
@@ -62,7 +62,7 @@ def send_payment_email(email):
 
 @app.route('/users', methods=['GET'])
 def get_users():
-    users = User.query.all()  # Ambil semua data user dari database
+    users = User.query.all()
     users_data = [{
         "id": user.id,
         "username": user.username,
@@ -91,7 +91,6 @@ def signup():
     db.session.add(new_user)
     db.session.commit()
 
-    # Kirim email pembayaran
     send_payment_email(email)
 
     session["user_id"] = new_user.id
@@ -117,7 +116,7 @@ def login_user():
     if not bcrypt.check_password_hash(user.password, password):
         return jsonify({"error": "Unauthorized"}), 401
     
-    if not user.is_paid:  # Cek apakah pengguna belum membayar
+    if not user.is_paid:
         return jsonify({"error": "Payment required"}), 402
     
     session["user_id"] = user.id
@@ -134,13 +133,11 @@ def update_payment():
     data = request.get_json()
     email = data.get('email')
 
-    # Mencari pengguna berdasarkan email
     user = User.query.filter_by(email=email).first()
 
     if user:
-        # Mengubah status pembayaran menjadi True
         user.is_paid = True
-        db.session.commit()  # Simpan perubahan ke database
+        db.session.commit()
         return jsonify({"is_paid": user.is_paid}), 200
     else:
         return jsonify({"error": "Email not found"}), 404
@@ -150,13 +147,11 @@ def update_role():
     data = request.get_json()
     email = data.get('email')
 
-    # Mencari pengguna berdasarkan email
     user = User.query.filter_by(email=email).first()
 
     if user:
-        # Mengubah role pengguna menjadi Admin
         user.role = "admin"
-        db.session.commit()  # Simpan perubahan ke database
+        db.session.commit()
         return jsonify({"role": user.role}), 201
     else:
         return jsonify({"error": "Email not found"}), 404
@@ -164,18 +159,15 @@ def update_role():
 @app.route('/process_frame', methods=['POST'])
 def process_frame():
     try:
-        # Ambil data frame dari request
         data = request.json
         frame_base64 = data.get("frame")
         if not frame_base64:
             return jsonify({"error": "No frame provided"}), 400
 
-        # Decode base64 ke numpy array
         frame_data = base64.b64decode(frame_base64)
         np_arr = np.frombuffer(frame_data, np.uint8)
         frame = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
 
-        # Deteksi objek dengan YOLO
         results = model(frame)[0]
         detections = [{"class": results.names[class_id], "confidence": round(float(conf), 2)}
                       for class_id, conf in zip(results.boxes.cls.cpu().numpy(), results.boxes.conf.cpu().numpy())]
