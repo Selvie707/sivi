@@ -18,3 +18,14 @@
     width: 160px;
     cursor: pointer;
 }
+
+.navbar-icons{
+    margin-right: 20px;
+    display: flex;
+    gap: 62px;
+}
+
+.icon{
+    width: auto;
+    height: 32px;
+}

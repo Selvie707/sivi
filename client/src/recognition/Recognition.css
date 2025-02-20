@@ -1,9 +1,20 @@
 #root {
-    max-width: 1280px;
+    max-width: 100%;
     margin: 0px;
     padding: 0px;
     text-align: center;
   }
+
+  * {
+    box-sizing: border-box;
+  }  
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow-x: hidden;
+  }  
   
   .logo {
     height: 6em;
@@ -25,14 +36,20 @@
   
   .detected{
     display: flex;
-    margin: 30px;
+    margin: 0px;
+    padding: 30px;
+    width: 100%;
+    max-width: 100vw;
   }
   
-  .detectedSentence{
+  .detectedSentencee{
+    margin: 0px 122px;
     width: 100%;
     height: 480px;
-    display: grid;
-    align-items: end;
+    display: flex;
+    gap: 22px;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
   }
   
@@ -62,6 +79,7 @@
   .a{
     width: 100%;
     height: 100%;
+    margin: 0px 120px;
     font-size: 32px;
     align-content: center;
     justify-content: center;
@@ -77,8 +95,10 @@
   }
   
   .interval{
+    margin-left: 30px;
     display: flex;
     align-items: center;
+    flex-grow: 1;
   }
   
   .intervalOption{
@@ -90,7 +110,38 @@
     color: #3E65B0;
     background: #FFFFFF;
     text-align: center;
+    margin-top: 36px;
     margin-left: 20px;
+    font-family: "Lora", serif;
+    flex-grow: 1;
+  }
+
+  .camera-selection{
+    width: 100%;
+    height: fit-content;
+    padding: 12px;
+    color: #3E65B0;
+    display: flex;
+    gap: 12px;
+    background: #FFFFFF;
+    text-align: center; 
+    font-family: "Lora", serif;
+  }
+
+  .camera-selectionn{
+    width: fit-content;
+    height: fit-content;
+    padding: 12px;
+    border-width: 2px;
+    border-image: linear-gradient(#5891FF, #F7A5FF) 1;
+    color: #3E65B0;
+    background: #FFFFFF;
+    flex-grow: 1;
+    text-align: center;
+    font-family: "Lora", serif;
+  }
+
+  .labell{
     font-family: "Lora", serif;
   }
   
@@ -99,9 +150,13 @@
   }
   
   .history{
-    margin: 52px 30px;
     display: flex;
-    justify-content: space-between;
+  }
+
+  .history-text{
+    margin: 0px;
+    padding: 0px;
+    flex-grow: 1;
   }
   
   .history-grid{
@@ -145,4 +200,3 @@
   .read-the-docs {
     color: #888;
   }
-  

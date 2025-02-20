@@ -73,7 +73,8 @@ h2{
     border-image: linear-gradient(#5891FF, #F7A5FF) 1;
     background: transparent;
     font-family: "Lora", serif;
-    color: rgb(255, 255, 255);
+    color: #3E65B0;
+    font-size: 15px;
 }
 
 input[type="text"]::-webkit-input-placeholder{
@@ -108,5 +109,12 @@ input[type="password"]::-webkit-input-placeholder{
 .ask{
     color: #3E65B0;
     font-size: 15px;
+    font-weight: 500;
+}
+
+.linkk{
     font-family: "Lora", serif;
+    color: #3E65B0;
+    font-size: 15px;
+    font-weight: 800;
 }

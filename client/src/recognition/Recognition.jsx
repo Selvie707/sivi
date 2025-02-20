@@ -1,63 +1,105 @@
 import React, { useEffect, useRef, useState } from "react";
 import './Recognition.css';
+import logo from "../assets/camoff.png";
 import axios from "axios";
 import Navbar from '../components/navbar/Navbar';
-import Guide from "../guide/Guide"; // Import halaman panduan
+import Guide from "../guide/Guide";
 
 const App = () => {
   const videoRef = useRef(null);
-  const [detectedLetter, setDetectedLetter] = useState("-"); // Menampilkan huruf satu-satu
+  const streamRef = useRef(null);
+  const [cameraActive, setCameraActive] = useState(false);
+  const [detectedLetter, setDetectedLetter] = useState("-");
   const [lastConfidence, setLastConfidence] = useState(null);
   const [fetchInterval, setFetchInterval] = useState(1000);
   const [intervalId, setIntervalId] = useState(null);
   const [history, setHistory] = useState([]);
   const [showGuide, setShowGuide] = useState(false);
+  const [cameras, setCameras] = useState([]); // Simpan daftar kamera
+  const [selectedCamera, setSelectedCamera] = useState(""); // Kamera yang dipilih
 
+  // Ambil daftar kamera saat komponen dimuat
   useEffect(() => {
-    navigator.mediaDevices
-      .getUserMedia({ video: true })
-      .then((stream) => {
+    async function getCameras() {
+      try {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const videoDevices = devices.filter(device => device.kind === "videoinput");
+        setCameras(videoDevices);
+
+        if (videoDevices.length > 0) {
+          setSelectedCamera(videoDevices[0].deviceId); // Pilih kamera pertama sebagai default
+        }
+      } catch (err) {
+        console.error("Error fetching cameras: ", err);
+      }
+    }
+
+    getCameras();
+  }, []);
+
+  const startCamera = async () => {
+    if (!selectedCamera) return;
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { deviceId: { exact: selectedCamera } },
+      });
+
+      streamRef.current = stream;
+      setCameraActive(true); 
+
+      // Tunggu sejenak agar video bisa diperbarui
+      setTimeout(() => {
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
         }
-      })
-      .catch((err) => console.error("Error accessing camera: ", err));
+      }, 100);
+    } catch (err) {
+      console.error("Error accessing camera: ", err);
+    }
+  };
 
-    return () => clearInterval(intervalId);
-  }, []);
+  const stopCamera = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current = null;
+    }
+    setCameraActive(false);
+  };
 
   const captureFrame = () => {
-    if (videoRef.current) {
-      const canvas = document.createElement("canvas");
-      const video = videoRef.current;
+    if (!cameraActive || !videoRef.current) return null;
 
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
+    const canvas = document.createElement("canvas");
+    const video = videoRef.current;
 
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
 
-      const frame = canvas.toDataURL("image/jpeg");
-      return frame.split(",")[1];
-    }
-    return null;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    return canvas.toDataURL("image/jpeg").split(",")[1];
   };
 
   const sendFrameToServer = async () => {
     const frame = captureFrame();
     if (!frame) return;
-  
+
     try {
       const response = await axios.post("http://127.0.0.1:5000/process_frame", { frame });
-  
+
       if (response.data && response.data.length > 0) {
         const detectedClass = response.data[0].class;
         const detectedConfidence = response.data[0].confidence;
-  
+
         if (detectedConfidence > 0.5) {
           setDetectedLetter(detectedClass);
           setLastConfidence(detectedConfidence);
-          setHistory((prevHistory) => [...prevHistory, { frame: `data:image/jpeg;base64,${frame}`, letter: detectedClass }]);
+          setHistory((prevHistory) => [
+            ...prevHistory,
+            { frame: `data:image/jpeg;base64,${frame}`, letter: detectedClass }
+          ]);
         }
       } else {
         setDetectedLetter("-");
@@ -70,22 +112,61 @@ const App = () => {
   useEffect(() => {
     if (intervalId) clearInterval(intervalId);
 
-    const newIntervalId = setInterval(sendFrameToServer, fetchInterval);
-    setIntervalId(newIntervalId);
-
-    return () => clearInterval(newIntervalId);
-  }, [fetchInterval]);
+    if (cameraActive) {
+      const newIntervalId = setInterval(sendFrameToServer, fetchInterval);
+      setIntervalId(newIntervalId);
+      return () => clearInterval(newIntervalId);
+    }
+  }, [fetchInterval, cameraActive]);
 
   return (
     <div className='container'>
       <Navbar />
 
       <div className="detected">
-        <video className="video" ref={videoRef} autoPlay playsInline style={{ width: "50%" }} />
+        {!cameraActive ? (
+          <img src={logo} alt="Logo" style={{ width: "30%", marginLeft: "52px" }} />          
+        ) : (
+          <video className="video" ref={videoRef} autoPlay playsInline style={{ width: "50%" }} />
+        )}
 
-        <div className="detectedSentence">
+        <div className="detectedSentencee">
           <h2 className="a">TERDETEKSI SEBAGAI HURUF</h2>
           <p className="b">{detectedLetter}</p>
+
+          {/* Pilihan Kamera */}
+          <div className="camera-selection">
+            <label htmlFor="cameraSelect" className="labell">PILIH KAMERA:</label>
+            <select
+              id="cameraSelect"
+              className="camera-selectionn"
+              onChange={(e) => setSelectedCamera(e.target.value)}
+              value={selectedCamera}
+              disabled={cameraActive} // Tidak bisa diubah saat kamera aktif
+            >
+              {cameras.map((camera, index) => (
+                <option key={camera.deviceId} value={camera.deviceId}>
+                  {camera.label || `Kamera ${index + 1}`}
+                </option>
+              ))}
+            </select>
+            <label className="labell">ATUR KECEPATAN:</label>
+            <select className="camera-selectionn" onChange={(e) => setFetchInterval(Number(e.target.value))} value={fetchInterval}>
+              <option value={500}>0.5 detik</option>
+              <option value={1000}>1 detik</option>
+              <option value={1500}>1.5 detik</option>
+              <option value={2000}>2 detik</option>
+              <option value={3000}>3 detik</option>
+              <option value={5000}>5 detik</option>
+            </select>
+          </div>
+
+          {!cameraActive ? (
+            <button className="button" onClick={startCamera}>MULAI KAMERA</button>
+          ) : (
+            <button className="button" onClick={stopCamera}>MATIKAN KAMERA</button>
+          )}
+
           <button className="button" onClick={() => setShowGuide(true)}>PANDUAN</button>
           {showGuide && <Guide onClose={() => setShowGuide(false)} />}
         </div>
@@ -93,19 +174,7 @@ const App = () => {
 
       <div className="history-container">
         <div className="history">
-          <h2>History</h2>
-
-          <div className="interval">
-            <h2>Set Fetch Interval:</h2>
-            <select className="intervalOption" onChange={(e) => setFetchInterval(Number(e.target.value))} value={fetchInterval}>
-              <option value={500}>0.5 seconds</option>
-              <option value={1000}>1 second</option>
-              <option value={1500}>1.5 seconds</option>
-              <option value={2000}>2 seconds</option>
-              <option value={3000}>3 seconds</option>
-              <option value={5000}>5 seconds</option>
-            </select>
-          </div>
+          <h2 className="history-text">HASIL DETEKSI</h2>
         </div>
         
         <div className="history-grid">
