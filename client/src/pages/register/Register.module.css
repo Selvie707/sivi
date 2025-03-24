@@ -1,0 +1,327 @@
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap');
+
+*{
+    font-family: "Lora", serif;
+}
+
+.login-form-container .heading{
+    font-size: 122px;
+    margin: 0px;
+    width: fit-content;
+    height: fit-content;
+    font-family: "Lora", serif;
+}
+
+.register-container{
+    position: fixed;
+    display: flex;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    font-family: "Lora", serif;
+    background-color: rgb(255, 255, 255);
+}
+
+.logo-container{
+    width: 50%;
+    height: 100%;
+    float: left;
+    display: grid;
+    align-items: center;
+    background: #5891FF;
+}
+
+.sivi-logo{
+    padding: 0px;
+    width: 80%;
+    height: auto;
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.register-form-container{
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    align-items: center;
+    justify-content: center;
+    background-color: #FFFFFF;
+    float: right;
+    gap: 32px;
+    padding: 0px;
+    margin: 0px 122px;
+    background-color: rgb(255, 255, 255);
+}
+
+.form-class{
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    margin-bottom: 150px;
+}
+
+.field{
+    margin: 0px;
+    width: 100%;
+    padding: 32px;
+    outline: none;
+    border-radius: 8px;
+    border-width: 5px;
+    border-image: #5891FF 2;
+    background: transparent;    
+    color: #3E65B0;
+    font-size: 52px;
+}
+
+.password-container {
+    position: relative;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+  
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    color: #555;
+}
+
+.eye-icons{
+    font-size: 50px;
+}
+
+input[type="text"]::-webkit-input-placeholder{
+    color: #3E65B0;
+    opacity: 52%;
+    font-size: 15px;
+}
+
+
+input[type="email"]::-webkit-input-placeholder{
+    color: #3E65B0;
+    opacity: 52%;
+    font-size: 15px;
+}
+
+input[type="password"]::-webkit-input-placeholder{
+    color: #3E65B0;
+    opacity: 52%;
+    font-size: 15px;
+}
+
+.register-button{
+    height: fit-content;
+    width: 100%;
+    padding: 18px;
+    margin-top: 20px;
+    border: 0px;
+    font-size: 62px;
+    font-family: "Lora", serif;
+    background: #5891FF;
+}
+
+.go-to-login{
+    color: #3E65B0;
+    font-size: 38px;
+    font-weight: 500;
+}
+
+.route-to-login{
+    font-family: "Lora", serif;
+    color: #3E65B0;
+    font-size: 38px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+    .register-form-container{
+        gap: 0px;
+        margin: 0px 32px;
+    }
+
+    .heading{
+        font-size: 28px;
+    }
+
+    .logo-container{
+        display: none;
+    }
+
+    .form-class{
+        gap: 12px;
+        margin: 32px 0px;
+    }
+
+    .eye-icons{
+        font-size: 25px;
+    }
+
+    .form-class .field{
+        padding: 16px;
+        font-size: 16px;
+        border-width: 2px;
+    }
+
+    .form-class input[type="text"]::-webkit-input-placeholder{
+        font-size: 16px;
+    }
+
+    .form-class input[type="email"]::-webkit-input-placeholder{
+        font-size: 16px;
+    }
+
+    .form-class input[type="password"]::-webkit-input-placeholder{
+        font-size: 16px;
+    }
+
+    .register-button{
+        font-size: 16px;
+    }
+
+    .go-to-login{
+        font-size: 12px;
+    }
+
+    .route-to-login{
+        font-size: 12px;
+    }
+}
+
+@media screen and (min-width: 769px) and (max-width: 1219px) {
+    .register-form-container{
+        gap: 0px;
+        margin: 0px 32px;
+    }
+
+    .heading{
+        font-size: 52px;
+    }
+
+    .form-class{
+        gap: 12px;
+        margin: 32px 0px;
+    }
+
+    .form-class .field{
+        padding: 16px;
+        font-size: 28px;
+        border-width: 2px;
+    }
+
+    .eye-icons{
+        font-size: 35px;
+    }
+
+    .form-class input[type="text"]::-webkit-input-placeholder{
+        font-size: 28px;
+    }
+
+    .form-class input[type="email"]::-webkit-input-placeholder{
+        font-size: 28px;
+    }
+
+    .form-class input[type="password"]::-webkit-input-placeholder{
+        font-size: 28px;
+    }
+
+    .register-button{
+        font-size: 28px;
+    }
+
+    .go-to-login{
+        font-size: 18px;
+    }
+
+    .route-to-login{
+        font-size: 18px;
+    }
+}
+
+@media screen and (min-width: 1220px) and (max-width: 1920px) {
+    .heading{
+        font-size: 52px;
+    }
+
+    .field{
+        padding: 16px;
+        font-size: 38px;
+        border-width: 2px;
+    }
+
+    .eye-icons{
+        font-size: 35px;
+    }
+
+    .form-class input[type="text"]::-webkit-input-placeholder{
+        font-size: 28px;
+    }
+
+    .form-class input[type="email"]::-webkit-input-placeholder{
+        font-size: 28px;
+    }
+
+    .form-class input[type="password"]::-webkit-input-placeholder{
+        font-size: 28px;
+    }
+
+    .register-button{
+        font-size: 28px;
+    }
+
+    .go-to-login{
+        font-size: 22px;
+    }
+
+    .route-to-login{
+        font-size: 22px;
+    }
+}
+
+@media screen and (min-width: 1921px) {
+    .heading{
+        font-size: 82px;
+    }
+
+    .field{
+        padding: 16px;
+        font-size: 38px;
+        border-width: 2px;
+    }
+
+    .eye-icons{
+        font-size: 50px;
+    }
+
+    .form-class input[type="text"]::-webkit-input-placeholder{
+        font-size: 38px;
+    }
+
+    .form-class input[type="email"]::-webkit-input-placeholder{
+        font-size: 38px;
+    }
+
+    .form-class input[type="password"]::-webkit-input-placeholder{
+        font-size: 38px;
+    }
+
+    .register-button{
+        font-size: 38px;
+    }
+
+    .go-to-login{
+        font-size: 28px;
+    }
+
+    .route-to-login{
+        font-size: 28px;
+    }
+}

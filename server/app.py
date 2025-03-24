@@ -9,11 +9,13 @@ from models import db, User
 from flask_mail import Mail, Message
 from dotenv import load_dotenv
 import os
+import json
+import time
 
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, supports_credentials=True)
 
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
@@ -26,13 +28,12 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
 
 mail = Mail(app)
 
-model = YOLO(os.getenv('YOLO_MODEL_PATH'))
+model = YOLO("yolov10.pt")
 
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 SQLALCHEMY_ECHO = True
 
 bcrypt = Bcrypt(app)
-CORS(app, supports_credentials=True)
 db.init_app(app)
 
 with app.app_context():
@@ -60,6 +61,10 @@ def send_payment_email(email):
     except Exception as e:
         print(f"Error mengirim email: {str(e)}")
 
+@app.route("/")
+def home():
+    return "Welcome to SIVI server with Flask!"
+
 @app.route('/users', methods=['GET'])
 def get_users():
     users = User.query.all()
@@ -86,7 +91,7 @@ def signup():
     if user_exists:
         return jsonify({"error": "Email already exists"}), 409
     
-    hashed_password = bcrypt.generate_password_hash(password)
+    hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
     new_user = User(username=username, email=email, password=hashed_password, is_paid=is_paid, role=role)
     db.session.add(new_user)
     db.session.commit()
@@ -128,8 +133,8 @@ def login_user():
         "role": user.role
     })
 
-@app.route('/update-payment', methods=['POST'])
-def update_payment():
+@app.route('/update-user-status', methods=['POST'])
+def update_user_status():
     data = request.get_json()
     email = data.get('email')
 
@@ -157,24 +162,48 @@ def update_role():
         return jsonify({"error": "Email not found"}), 404
 
 @app.route('/process_frame', methods=['POST'])
+@cross_origin()
 def process_frame():
     try:
+        total_start_time = time.time()  # Mulai hitung waktu total
+
+        # 1️⃣ Terima data dari request
+        start_time = time.time()
         data = request.json
         frame_base64 = data.get("frame")
         if not frame_base64:
             return jsonify({"error": "No frame provided"}), 400
+        print(f"🕒 Waktu terima request: {(time.time() - start_time) * 1000:.2f} ms")
 
+        start_time = time.time()
         frame_data = base64.b64decode(frame_base64)
+        print(f"🕒 Waktu decode base64: {(time.time() - start_time) * 1000:.2f} ms")
+
+        start_time = time.time()
         np_arr = np.frombuffer(frame_data, np.uint8)
         frame = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
+        if frame is None:
+            return jsonify({"error": "Failed to decode image"}), 400
+        print(f"🖼️ Ukuran gambar yang diproses: {frame.shape}")  # (tinggi, lebar, jumlah_channel)
+        print(f"🕒 Waktu konversi ke numpy array: {(time.time() - start_time) * 1000:.2f} ms")
 
+        start_time = time.time()
         results = model(frame)[0]
+        print(f"🕒 Waktu inferensi YOLO: {(time.time() - start_time) * 1000:.2f} ms")
+
+        start_time = time.time()
         detections = [{"class": results.names[class_id], "confidence": round(float(conf), 2)}
                       for class_id, conf in zip(results.boxes.cls.cpu().numpy(), results.boxes.conf.cpu().numpy())]
+        print(f"🕒 Waktu parsing hasil deteksi: {(time.time() - start_time) * 1000:.2f} ms")
+        
+        total_processing_time = (time.time() - total_start_time) * 1000
+        print(f"✅ Total waktu pemrosesan: {total_processing_time:.2f} ms")
 
         return jsonify(detections)
     except Exception as e:
+        print(f"Error processing frame: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True, threaded=True)
+    port = int(os.environ.get("PORT", 8080))
+    app.run(host="0.0.0.0", port=port)
